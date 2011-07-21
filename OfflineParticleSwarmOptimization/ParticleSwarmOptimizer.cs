@@ -10,10 +10,10 @@ using System.Linq.Expressions;
 
 namespace OfflineParticleSwarmOptimization
 {
-    public class VariableParticleSwarmOptimizer
+    public class ParticleSwarmOptimizer
     {
         private readonly int _dimensions;
-        public VariableParticleSwarmOptimizer(int dimensions)
+        public ParticleSwarmOptimizer(int dimensions)
         {
             if(dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
             _dimensions = dimensions;
@@ -23,5 +23,6 @@ namespace OfflineParticleSwarmOptimization
             var result = new double[_dimensions];
             return result;
         }
+        
     }
 }

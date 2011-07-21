@@ -11,21 +11,23 @@ namespace OfflineParticleSwarmOptimizationTest
     ///to contain all VariableParticleSwarmOptimizerTest Unit Tests
     ///</summary>
     [TestClass()]
-    public class VariableParticleSwarmOptimizerTest
+    public class ParticleSwarmOptimizerTest
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void DimensionOfZeroThrowsAnException()
         {
             int dimensions = 0;
-            var target = new VariableParticleSwarmOptimizer(dimensions);
+            var target = new ParticleSwarmOptimizer(dimensions);
         }
         [TestMethod]
         public void ReportFitnessReturnsArraySizeEqualToDimensions()
         {
             int dimensions = 1;
-            var target = new VariableParticleSwarmOptimizer(dimensions);
+            var target = new ParticleSwarmOptimizer(dimensions);
             Assert.AreEqual(dimensions,target.ReportFitness(0.0).Length);
         }
+        [TestMethod]
+        public void 
     }
 }

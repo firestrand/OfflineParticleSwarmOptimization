@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VariableParticleSwarmOptimizerTest.cs" />
+    <Compile Include="ParticleSwarmOptimizerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OfflineParticleSwarmOptimization\OfflineParticleSwarmOptimization.csproj">

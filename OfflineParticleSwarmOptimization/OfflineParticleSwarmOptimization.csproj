@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="VariableParticleSwarmOptimizer.cs" />
+    <Compile Include="ParticleSwarmState.cs" />
+    <Compile Include="ParticleSwarmOptimizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
