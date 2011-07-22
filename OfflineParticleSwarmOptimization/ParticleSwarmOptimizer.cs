@@ -12,16 +12,16 @@ namespace OfflineParticleSwarmOptimization
 {
     public class ParticleSwarmOptimizer
     {
-        private readonly int _dimensions;
-        public ParticleSwarmOptimizer(int dimensions)
+        public ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound)
         {
             if(dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
-            _dimensions = dimensions;
+            var swarmState = new ParticleSwarmState(dimensions,swarmSize,lowerInit, upperInit, lowerBound, upperBound);
+
+            return swarmState;
         }
-        public double[] ReportFitness(double fitness)
+        public ParticleSwarmState ReportFitness(double fitness, ParticleSwarmState swarmState)
         {
-            var result = new double[_dimensions];
-            return result;
+            throw new NotImplementedException();
         }
         
     }

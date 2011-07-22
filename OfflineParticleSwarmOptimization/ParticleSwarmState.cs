@@ -1,3 +1,5 @@
+using System;
+
 namespace OfflineParticleSwarmOptimization
 {
     public class ParticleSwarmState
@@ -12,7 +14,7 @@ namespace OfflineParticleSwarmOptimization
         public double P { get; set; }
         public double W { get; set; }
         public double C { get; set; }
-        public int D { get; set; }
+        public int Dimensions { get; set; }
         public double[] LowerBound { get; set; }
         public double[] UpperBound { get; set; }
         
@@ -24,7 +26,31 @@ namespace OfflineParticleSwarmOptimization
         public int G { get; set; } //Global best index
         public double[] ParticleFitness { get; set; }
         public double[] BestParticleFitness { get; set; }
+        //Default parameterless constructor for serialization / deserialization
+        public ParticleSwarmState(){}
+        public ParticleSwarmState(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound )
+        {
+            Random rand = new Random();
 
+            Dimensions = dimensions;
+            S = swarmSize;
+
+            Particles = Tools.NewMatrix(swarmSize, dimensions);
+            Velocities = Tools.NewMatrix(swarmSize, dimensions);
+            BestParticle = Tools.NewMatrix(swarmSize, dimensions);
+            Links = new int[swarmSize, swarmSize];
+            Index = new int[swarmSize];
+            BestParticleFitness = new double[swarmSize];
+            ParticleFitness = new double[swarmSize];
+            for (int s = 0; s < S; s++)
+            {
+                for (int d = 0; d < dimensions; d++)
+                {
+                    Particles[s][d] = rand.NextDouble(lowerInit[d], upperInit[d]);
+                    Velocities[s][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[s][d]) / 2;
+                }
+            }
+        }
 
     }
 }

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ParticleSwarmState.cs" />
     <Compile Include="ParticleSwarmOptimizer.cs" />
+    <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
