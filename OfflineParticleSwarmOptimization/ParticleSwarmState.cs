@@ -10,11 +10,7 @@ namespace OfflineParticleSwarmOptimization
         * w := first cognitive/confidence coefficient
         * c := second cognitive/confidence coefficient
          */
-        public int S { get; set; }
-        public double P { get; set; }
-        public double W { get; set; }
-        public double C { get; set; }
-        public int Dimensions { get; set; }
+        public SwarmParameters Parameters { get; set; }
         public double[] LowerBound { get; set; }
         public double[] UpperBound { get; set; }
         
@@ -26,31 +22,35 @@ namespace OfflineParticleSwarmOptimization
         public int G { get; set; } //Global best index
         public double[] ParticleFitness { get; set; }
         public double[] BestParticleFitness { get; set; }
+        public bool InitializeLinks { get; set; }
+
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
-        public ParticleSwarmState(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound )
+        public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound )
         {
-            Random rand = new Random();
+            var rand = new Random();
+            var parameters = new SwarmParameters();
+            parameters.Initialize(dimensions,numberInformed);
+            var s = Parameters.S;
 
-            Dimensions = dimensions;
-            S = swarmSize;
-
-            Particles = Tools.NewMatrix(swarmSize, dimensions);
-            Velocities = Tools.NewMatrix(swarmSize, dimensions);
-            BestParticle = Tools.NewMatrix(swarmSize, dimensions);
-            Links = new int[swarmSize, swarmSize];
-            Index = new int[swarmSize];
-            BestParticleFitness = new double[swarmSize];
-            ParticleFitness = new double[swarmSize];
-            for (int s = 0; s < S; s++)
+            Particles = Tools.NewMatrix(s, dimensions);
+            Velocities = Tools.NewMatrix(s, dimensions);
+            BestParticle = Tools.NewMatrix(s, dimensions);
+            Links = new int[s, s];
+            Index = new int[s];
+            BestParticleFitness = new double[s];
+            ParticleFitness = new double[s];
+            for (int i = 0; i < s; i++)
             {
                 for (int d = 0; d < dimensions; d++)
                 {
-                    Particles[s][d] = rand.NextDouble(lowerInit[d], upperInit[d]);
-                    Velocities[s][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[s][d]) / 2;
+                    Particles[i][d] = rand.NextDouble(lowerInit[d], upperInit[d]);
+                    Velocities[i][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[i][d]) / 2;
                 }
             }
+            InitializeLinks = true;
         }
-
+        
+        
     }
 }
