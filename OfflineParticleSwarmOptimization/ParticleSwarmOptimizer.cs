@@ -12,16 +12,33 @@ namespace OfflineParticleSwarmOptimization
 {
     public class ParticleSwarmOptimizer
     {
-        public ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound)
+        public ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound)
         {
-            if(dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
-            var swarmState = new ParticleSwarmState(dimensions,swarmSize,lowerInit, upperInit, lowerBound, upperBound);
-
+            const int numberOfInformedParticles = 3;
+            var swarmState = new ParticleSwarmState(dimensions,numberOfInformedParticles,lowerInit, upperInit, lowerBound, upperBound);
             return swarmState;
         }
-        public ParticleSwarmState ReportFitness(double fitness, ParticleSwarmState swarmState)
+        public ParticleSwarmState ReportFitness(int particle, double fitness, ParticleSwarmState swarmState)
         {
-            throw new NotImplementedException();
+            int S = swarmState.Parameters.S;
+            double p = swarmState.Parameters.P;
+
+            var rand = new Random();
+            //Set the particles fitness
+            swarmState.ParticleFitness[particle] = fitness;
+            
+            //Check if epoch values should be updated
+            if(particle == S)
+            {
+                swarmState.UpdateEpochValues();
+            }
+            
+            //check if better
+            //move particle
+        }
+        public double[] GetValues(int particle, ParticleSwarmState swarmState)
+        {
+            return swarmState.Particles[particle];
         }
         
     }

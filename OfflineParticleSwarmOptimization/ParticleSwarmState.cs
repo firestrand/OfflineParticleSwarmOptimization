@@ -22,12 +22,19 @@ namespace OfflineParticleSwarmOptimization
         public int G { get; set; } //Global best index
         public double[] ParticleFitness { get; set; }
         public double[] BestParticleFitness { get; set; }
-        public bool InitializeLinks { get; set; }
+        public bool ShouldInitializeLinks { get; set; }
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
         public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound )
         {
+            if (dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
+            if (numberInformed <= 0) throw new ArgumentOutOfRangeException("numberInformed");
+            if(lowerInit == null || lowerInit.Length != dimensions) throw new ArgumentOutOfRangeException("lowerInit");
+            if (upperInit == null || upperInit.Length != dimensions) throw new ArgumentOutOfRangeException("upperInit");
+            if (lowerBound == null || lowerBound.Length != dimensions) throw new ArgumentOutOfRangeException("lowerBound");
+            if (upperBound == null || upperBound.Length != dimensions) throw new ArgumentOutOfRangeException("upperBound");
+
             var rand = new Random();
             var parameters = new SwarmParameters();
             parameters.Initialize(dimensions,numberInformed);
@@ -48,9 +55,50 @@ namespace OfflineParticleSwarmOptimization
                     Velocities[i][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[i][d]) / 2;
                 }
             }
-            InitializeLinks = true;
+            ShouldInitializeLinks = true;
+            //InitializeFitness
+            for (int i = 0; i < BestParticleFitness.Length; i++)
+            {
+                BestParticleFitness[i] = Double.MaxValue;
+            }
         }
-        
-        
+
+        public void InitializeLinks()
+        {
+            if (ShouldInitializeLinks)	// Random topology
+            {
+                var rand = new Random();
+                // Who informs who, at random
+                for (int s = 0; s < Parameters.S; s++)
+                {
+                    for (int m = 0; m < Parameters.S; m++)
+                    {
+                        if (rand.NextDouble() < Parameters.P) Links[m, s] = 1;	// Probabilistic method
+                        else Links[m, s] = 0;
+                    }
+                    Links[s, s] = 1;
+                }
+            }
+        }
+        /// <summary>
+        /// Set the globalBest to a new best if one was found
+        /// </summary>
+        /// <returns>True if a new best was found</returns>
+        public bool SetGlobalBest()
+        {
+            int oldG = G;
+            for(int i = 0; i < Parameters.S; i++)
+            {
+                if (BestParticleFitness[i] < BestParticleFitness[G])
+                    G = i;
+            }
+            return oldG != G;
+        }
+        public void UpdateEpochValues()
+        {
+            InitializeLinks();
+            ShouldInitializeLinks = SetGlobalBest();
+
+        }
     }
 }
