@@ -4,12 +4,6 @@ namespace OfflineParticleSwarmOptimization
 {
     public class ParticleSwarmState
     {
-        /* S := swarm size
-        * K := maximum number of particles _informed_ by a given one
-        * p := probability threshold of random topology, typically calculated from K
-        * w := first cognitive/confidence coefficient
-        * c := second cognitive/confidence coefficient
-         */
         public SwarmParameters Parameters { get; set; }
         public double[] LowerBound { get; set; }
         public double[] UpperBound { get; set; }
@@ -18,11 +12,11 @@ namespace OfflineParticleSwarmOptimization
         public double[][] Velocities { get; set; }
         public double[][] BestParticle { get; set; }
         public int[,] Links { get; set; }
-        public int[] Index { get; set; }
         public int G { get; set; } //Global best index
         public double[] ParticleFitness { get; set; }
         public double[] BestParticleFitness { get; set; }
         public bool ShouldInitializeLinks { get; set; }
+        public int EvaluationCount { get; set; }
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
@@ -36,15 +30,15 @@ namespace OfflineParticleSwarmOptimization
             if (upperBound == null || upperBound.Length != dimensions) throw new ArgumentOutOfRangeException("upperBound");
 
             var rand = new Random();
-            var parameters = new SwarmParameters();
-            parameters.Initialize(dimensions,numberInformed);
+            Parameters = SwarmParameters.Initialize(dimensions,numberInformed);
             var s = Parameters.S;
 
             Particles = Tools.NewMatrix(s, dimensions);
             Velocities = Tools.NewMatrix(s, dimensions);
             BestParticle = Tools.NewMatrix(s, dimensions);
+            LowerBound = lowerBound;
+            UpperBound = upperBound;
             Links = new int[s, s];
-            Index = new int[s];
             BestParticleFitness = new double[s];
             ParticleFitness = new double[s];
             for (int i = 0; i < s; i++)
@@ -56,6 +50,7 @@ namespace OfflineParticleSwarmOptimization
                 }
             }
             ShouldInitializeLinks = true;
+            EvaluationCount = 0;
             //InitializeFitness
             for (int i = 0; i < BestParticleFitness.Length; i++)
             {
@@ -98,7 +93,6 @@ namespace OfflineParticleSwarmOptimization
         {
             InitializeLinks();
             ShouldInitializeLinks = SetGlobalBest();
-
         }
     }
 }
