@@ -12,10 +12,10 @@ namespace OfflineParticleSwarmOptimization
 {
     public static class ParticleSwarmOptimizer
     {
-        public static ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound)
+        public static ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null)
         {
             const int numberOfInformedParticles = 3;
-            var swarmState = new ParticleSwarmState(dimensions,numberOfInformedParticles,lowerInit, upperInit, lowerBound, upperBound);
+            var swarmState = new ParticleSwarmState(dimensions,numberOfInformedParticles,lowerInit, upperInit, lowerBound, upperBound, quantization);
             return swarmState;
         }
         public static ParticleSwarmState ReportFitness(int particle, double fitness, ParticleSwarmState swarmState)
@@ -32,11 +32,10 @@ namespace OfflineParticleSwarmOptimization
                 swarmState.Particles[particle].CopyTo(swarmState.BestParticle[particle], 0);
                 swarmState.BestParticleFitness[particle] = swarmState.ParticleFitness[particle];
                 // ... update the best of the bests
-                if (swarmState.BestParticleFitness[particle] < swarmState.BestParticleFitness[swarmState.G])
-                {
-                    //Though we update here, it is possible to get out of sync due to threading so update each epoch
-                    swarmState.G = particle;
-                }
+                //if (swarmState.BestParticleFitness[particle] < swarmState.BestParticleFitness[swarmState.G])
+                //{
+                //    swarmState.G = particle;
+                //}
             }
 
             //Check if epoch values should be updated
@@ -96,6 +95,8 @@ namespace OfflineParticleSwarmOptimization
                     swarmState.Velocities[s][d] = 0;
                 }
             }
+            //Respect Quantization
+            Tools.Quantize(swarmState.Particles[s],swarmState.Quantization);
             swarmState.EvaluationCount++;
             return swarmState;
         }

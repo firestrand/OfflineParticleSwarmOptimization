@@ -77,5 +77,26 @@ namespace OfflineParticleSwarmOptimization
         {
             return lowerBound + rand.NextDouble() * (upperBound - lowerBound);
         }
+
+        public static void Quantize(double[] x, double[] q)
+        {
+            
+            if (q == null) return;
+            if (x == null) throw new ArgumentNullException("x");
+            /*
+             Quantisatition of a position
+             Only values like x+k*q (k integer) are admissible 
+             */
+            if (x.Length != q.Length)
+                throw new ArgumentOutOfRangeException("x,q", "Arrays are not the same length.");
+
+            for (int d = 0; d < q.Length; d++)
+            {
+                if (q[d] > 0.0)	// Note that qd can't be < 0
+                {
+                    x[d] = q[d] * Math.Floor(0.5 + x[d] / q[d]);
+                }
+            }
+        }
     }
 }

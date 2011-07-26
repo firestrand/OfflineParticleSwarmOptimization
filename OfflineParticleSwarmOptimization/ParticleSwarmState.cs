@@ -17,10 +17,11 @@ namespace OfflineParticleSwarmOptimization
         public double[] BestParticleFitness { get; set; }
         public bool ShouldInitializeLinks { get; set; }
         public int EvaluationCount { get; set; }
+        public double[] Quantization { get; set; }
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
-        public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound )
+        public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null )
         {
             if (dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
             if (numberInformed <= 0) throw new ArgumentOutOfRangeException("numberInformed");
@@ -38,6 +39,8 @@ namespace OfflineParticleSwarmOptimization
             BestParticle = Tools.NewMatrix(s, dimensions);
             LowerBound = lowerBound;
             UpperBound = upperBound;
+            Quantization = quantization;
+
             Links = new int[s, s];
             BestParticleFitness = new double[s];
             ParticleFitness = new double[s];

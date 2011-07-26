@@ -30,6 +30,11 @@ namespace OfflineParticleSwarmOptimization
         public double C;
         public static SwarmParameters Initialize(int dimensions, int numInformed)
         {
+            var s = (int) (10 + 2*Math.Sqrt(dimensions));
+            return Initialize(dimensions,s,numInformed);
+        }
+        public static SwarmParameters Initialize(int dimensions, int swarmSize, int numInformed)
+        {
             /*
              * S := swarm size
              * K := maximum number of particles _informed_ by a given one
@@ -39,7 +44,7 @@ namespace OfflineParticleSwarmOptimization
              */
             var parameters = new SwarmParameters();
             parameters.D = dimensions;
-            parameters.S = (int)(10 + 2 * Math.Sqrt(dimensions));	// Swarm size
+            parameters.S = swarmSize;	// Swarm size
             parameters.K = numInformed; //number of informed particles
             parameters.P = 1 - Math.Pow(1 - (double)1 / (parameters.S), parameters.K); //Probability threshold of random topology
             // (to simulate the global best PSO, set p=1)
