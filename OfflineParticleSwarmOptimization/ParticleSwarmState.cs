@@ -21,6 +21,20 @@ namespace OfflineParticleSwarmOptimization
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
+        public ParticleSwarmState(int dimensions, int swarmSize, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null)
+        {
+            if (dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
+            if (swarmSize <= 0) throw new ArgumentOutOfRangeException("swarmSize");
+            if (numberInformed <= 0) throw new ArgumentOutOfRangeException("numberInformed");
+            if (lowerInit == null || lowerInit.Length != dimensions) throw new ArgumentOutOfRangeException("lowerInit");
+            if (upperInit == null || upperInit.Length != dimensions) throw new ArgumentOutOfRangeException("upperInit");
+            if (lowerBound == null || lowerBound.Length != dimensions) throw new ArgumentOutOfRangeException("lowerBound");
+            if (upperBound == null || upperBound.Length != dimensions) throw new ArgumentOutOfRangeException("upperBound");
+
+            Parameters = SwarmParameters.Initialize(dimensions, swarmSize, numberInformed);
+            Initialize(dimensions, lowerInit, upperInit, lowerBound, upperBound, quantization);
+        }
+
         public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null )
         {
             if (dimensions <= 0) throw new ArgumentOutOfRangeException("dimensions");
@@ -30,8 +44,15 @@ namespace OfflineParticleSwarmOptimization
             if (lowerBound == null || lowerBound.Length != dimensions) throw new ArgumentOutOfRangeException("lowerBound");
             if (upperBound == null || upperBound.Length != dimensions) throw new ArgumentOutOfRangeException("upperBound");
 
+            
+            Parameters = SwarmParameters.Initialize(dimensions, numberInformed);
+            Initialize(dimensions, lowerInit, upperInit, lowerBound, upperBound, quantization);
+        }
+
+        private void Initialize(int dimensions, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound,
+                                double[] quantization)
+        {
             var rand = new Random();
-            Parameters = SwarmParameters.Initialize(dimensions,numberInformed);
             var s = Parameters.S;
 
             Particles = Tools.NewMatrix(s, dimensions);
@@ -41,7 +62,7 @@ namespace OfflineParticleSwarmOptimization
             UpperBound = upperBound;
             Quantization = quantization;
 
-            Links = new int[s, s];
+            Links = new int[s,s];
             BestParticleFitness = new double[s];
             ParticleFitness = new double[s];
             for (int i = 0; i < s; i++)
@@ -49,7 +70,7 @@ namespace OfflineParticleSwarmOptimization
                 for (int d = 0; d < dimensions; d++)
                 {
                     Particles[i][d] = rand.NextDouble(lowerInit[d], upperInit[d]);
-                    Velocities[i][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[i][d]) / 2;
+                    Velocities[i][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[i][d])/2;
                 }
             }
             ShouldInitializeLinks = true;
