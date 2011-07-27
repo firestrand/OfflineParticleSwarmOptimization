@@ -34,11 +34,6 @@ namespace OfflineParticleSwarmOptimization
             {
                 swarmState.Particles[particle].CopyTo(swarmState.BestParticle[particle], 0);
                 swarmState.BestParticleFitness[particle] = swarmState.ParticleFitness[particle];
-                // ... update the best of the bests
-                //if (swarmState.BestParticleFitness[particle] < swarmState.BestParticleFitness[swarmState.G])
-                //{
-                //    swarmState.G = particle;
-                //}
             }
 
             //Check if epoch values should be updated
@@ -61,28 +56,26 @@ namespace OfflineParticleSwarmOptimization
             }
             //.. compute the new velocity, and move
             // Exploration tendency
-                for (int d = 0; d < swarmState.Parameters.D; d++)
-                {
-                    swarmState.Velocities[s][d] = swarmState.Parameters.W * swarmState.Velocities[s][d];
-                    //If Quantization is in effect set vmin magnitude to Quantization value
-                    if (swarmState.Quantization != null &&
-                        Math.Abs(swarmState.Velocities[s][d]) < swarmState.Quantization[d])
-                    {
-                        swarmState.Velocities[s][d] = swarmState.Quantization[d]*
-                                                      Math.Sign(swarmState.Velocities[s][d]);
-                    }
-                    double px = swarmState.BestParticle[s][d] - swarmState.Particles[s][d];
-                    swarmState.Velocities[s][d] += rand.NextDouble(0.0, swarmState.Parameters.C) * px;
-                    if (g != s)
-                    {
-                        double gx = swarmState.BestParticle[g][d] - swarmState.Particles[s][d];
-                        swarmState.Velocities[s][d] += rand.NextDouble(0.0, swarmState.Parameters.C) * gx;
-                    }
-                    swarmState.Particles[s][d] = swarmState.Particles[s][d] + swarmState.Velocities[s][d];
-                }
-            //Bound Velocity
             for (int d = 0; d < swarmState.Parameters.D; d++)
             {
+                swarmState.Velocities[s][d] = swarmState.Parameters.W * swarmState.Velocities[s][d];
+                //If Quantization is in effect set vmin magnitude to Quantization value
+                if (swarmState.Quantization != null &&
+                    Math.Abs(swarmState.Velocities[s][d]) < swarmState.Quantization[d])
+                {
+                    swarmState.Velocities[s][d] = swarmState.Quantization[d]*
+                                                    Math.Sign(swarmState.Velocities[s][d]);
+                }
+                double px = swarmState.BestParticle[s][d] - swarmState.Particles[s][d];
+                swarmState.Velocities[s][d] += rand.NextDouble(0.0, swarmState.Parameters.C) * px;
+                if (g != s)
+                {
+                    double gx = swarmState.BestParticle[g][d] - swarmState.Particles[s][d];
+                    swarmState.Velocities[s][d] += rand.NextDouble(0.0, swarmState.Parameters.C) * gx;
+                }
+                swarmState.Particles[s][d] = swarmState.Particles[s][d] + swarmState.Velocities[s][d];
+
+                //Bound Velocity
                 if (swarmState.Particles[s][d] < swarmState.LowerBound[d])
                 {
                     swarmState.Particles[s][d] = swarmState.LowerBound[d];
