@@ -14,7 +14,7 @@ namespace UnmanagedPSOWrapper
  
        //Initialize
       [DllExport("initializeswarmstate", CallingConvention = CallingConvention.StdCall)]
-      static void InitializeSwarmState(int dimensions, int swarmSize, double[] lowerBound, double[] upperBound, double[] quantization)
+      static void InitializeSwarmState(int dimensions, int swarmSize, ref double[] lowerBound, ref double[] upperBound, ref double[] quantization)
       {
          lock(SwarmLock)
          {
@@ -34,9 +34,14 @@ namespace UnmanagedPSOWrapper
        }
        //Get Values
        [DllExport("getvalues", CallingConvention = CallingConvention.StdCall)]
-       static double[] GetValues(int particle)
+       static void GetValues(int particle, ref double[] values)
        {
-           return ParticleSwarmOptimizer.GetValues(particle, _swarmState);
+           values =  ParticleSwarmOptimizer.GetValues(particle, _swarmState);
+       }
+       [DllExport("getbestvalues", CallingConvention = CallingConvention.StdCall)]
+       static void GetBestValues(ref double[] values)
+       {
+           values =  ParticleSwarmOptimizer.GetValues(_swarmState.G, _swarmState);
        }
    }
 }
