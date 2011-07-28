@@ -14,12 +14,12 @@ namespace UnmanagedPSOWrapper
  
        //Initialize
       [DllExport("initializeswarmstate", CallingConvention = CallingConvention.StdCall)]
-      static void InitializeSwarmState(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization)
+      static void InitializeSwarmState(int dimensions, int swarmSize, double[] lowerBound, double[] upperBound, double[] quantization)
       {
          lock(SwarmLock)
          {
              _swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensions, swarmSize,
-                                                                                   lowerInit, upperInit, lowerBound,
+                                                                                   lowerBound, upperBound, lowerBound,
                                                                                    upperBound, quantization);
          }
       }
