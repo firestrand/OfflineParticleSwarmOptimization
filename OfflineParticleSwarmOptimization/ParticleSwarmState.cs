@@ -18,6 +18,7 @@ namespace OfflineParticleSwarmOptimization
         public bool ShouldInitializeLinks { get; set; }
         public int EvaluationCount { get; set; }
         public double[] Quantization { get; set; }
+        public bool Initialized { get; set; }
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
@@ -72,9 +73,11 @@ namespace OfflineParticleSwarmOptimization
                     Particles[i][d] = rand.NextDouble(lowerInit[d], upperInit[d]);
                     Velocities[i][d] = (rand.NextDouble(lowerBound[d], upperBound[d]) - Particles[i][d])/2;
                 }
+                Tools.Quantize(Particles[i], Quantization);
             }
             ShouldInitializeLinks = true;
             EvaluationCount = 0;
+            Initialized = true;
             //InitializeFitness
             for (int i = 0; i < BestParticleFitness.Length; i++)
             {

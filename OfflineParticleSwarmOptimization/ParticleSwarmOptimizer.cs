@@ -13,6 +13,10 @@ namespace OfflineParticleSwarmOptimization
     public static class ParticleSwarmOptimizer
     {
         const int NumberOfInformedParticles = 3;
+        public static ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, int swarmSize, int numberOfInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null)
+        {
+            return new ParticleSwarmState(dimensions, swarmSize, numberOfInformed, lowerInit, upperInit, lowerBound, upperBound, quantization);
+        }
         public static ParticleSwarmState InitializeParticleSwarmOptimizer(int dimensions, int swarmSize, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null)
         {
             return new ParticleSwarmState(dimensions, swarmSize, NumberOfInformedParticles, lowerInit, upperInit, lowerBound, upperBound, quantization);
@@ -21,6 +25,7 @@ namespace OfflineParticleSwarmOptimization
         {
             return new ParticleSwarmState(dimensions, NumberOfInformedParticles, lowerInit, upperInit, lowerBound, upperBound, quantization);
         }
+
         public static ParticleSwarmState ReportFitness(int particle, double fitness, ParticleSwarmState swarmState)
         {
             int S = swarmState.Parameters.S;
