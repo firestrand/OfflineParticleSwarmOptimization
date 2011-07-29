@@ -13,35 +13,29 @@ namespace UnmanagedPSOWrapper
        private static readonly object SwarmLock = new object();
  
        //Initialize
-      [DllExport("initializeswarmstate", CallingConvention = CallingConvention.StdCall)]
-      static void InitializeSwarmState(int dimensions, int swarmSize, ref double[] lowerBound, ref double[] upperBound, ref double[] quantization)
+      [DllExport("InitializeSwarmState", CallingConvention = CallingConvention.StdCall)]
+       static void InitializeSwarmState(int dimensions, int swarmSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] lowerBound, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] upperBound, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] quantization)
       {
-         lock(SwarmLock)
-         {
              _swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensions, swarmSize,
                                                                                    lowerBound, upperBound, lowerBound,
                                                                                    upperBound, quantization);
-         }
       }
        //ReportFitness
-       [DllExport("reportfitness", CallingConvention = CallingConvention.StdCall)]
+       [DllExport("ReportFitness", CallingConvention = CallingConvention.StdCall)]
        static void ReportFitness(int particle,double fitness)
        {
-           lock(SwarmLock)
-           {
                _swarmState = ParticleSwarmOptimizer.ReportFitness(particle, fitness, _swarmState);
-           }
        }
        //Get Values
-       [DllExport("getvalues", CallingConvention = CallingConvention.StdCall)]
-       static void GetValues(int particle, ref double[] values)
+       [DllExport("GetValues", CallingConvention = CallingConvention.StdCall)]
+       static void GetValues(int dimensions, int particle, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] values)
        {
-           values =  ParticleSwarmOptimizer.GetValues(particle, _swarmState);
+           ParticleSwarmOptimizer.GetValues(particle, _swarmState).CopyTo(values,0);
        }
-       [DllExport("getbestvalues", CallingConvention = CallingConvention.StdCall)]
-       static void GetBestValues(ref double[] values)
+       [DllExport("GetBestValues", CallingConvention = CallingConvention.StdCall)]
+       static void GetBestValues(int dimensions, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] values)
        {
-           values =  ParticleSwarmOptimizer.GetValues(_swarmState.G, _swarmState);
+           ParticleSwarmOptimizer.GetValues(_swarmState.G, _swarmState).CopyTo(values,0);
        }
    }
 }
