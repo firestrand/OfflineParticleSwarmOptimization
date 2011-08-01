@@ -11,7 +11,7 @@ namespace OfflineParticleSwarmOptimization
         public double[][] Particles { get; set; }
         public double[][] Velocities { get; set; }
         public double[][] BestParticle { get; set; }
-        public int[,] Links { get; set; }
+        public int[] Links { get; set; }
         public int G { get; set; } //Global best index
         public double[] ParticleFitness { get; set; }
         public double[] BestParticleFitness { get; set; }
@@ -63,7 +63,7 @@ namespace OfflineParticleSwarmOptimization
             UpperBound = upperBound;
             Quantization = quantization;
 
-            Links = new int[s,s];
+            Links = new int[s*s];
             BestParticleFitness = new double[s];
             ParticleFitness = new double[s];
             for (int i = 0; i < s; i++)
@@ -83,6 +83,7 @@ namespace OfflineParticleSwarmOptimization
             {
                 BestParticleFitness[i] = Double.MaxValue;
             }
+            G = 0;
         }
 
         public void InitializeLinks()
@@ -95,10 +96,10 @@ namespace OfflineParticleSwarmOptimization
                 {
                     for (int m = 0; m < Parameters.S; m++)
                     {
-                        if (rand.NextDouble() < Parameters.P) Links[m, s] = 1;	// Probabilistic method
-                        else Links[m, s] = 0;
+                        if (rand.NextDouble() < Parameters.P) Links[Tools.GetIndex(m, s)] = 1;	// Probabilistic method
+                        else Links[Tools.GetIndex(m, s)] = 0;
                     }
-                    Links[s, s] = 1;
+                    Links[Tools.GetIndex(s, s)] = 1;
                 }
             }
         }

@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnmanagedPSOWrapper", "UnmanagedPSOWrapper\UnmanagedPSOWrapper.csproj", "{46715A67-B134-473C-ACE4-EF6AA1C0E688}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnmanagedPSOTest", "UnmanagedPSOTest\UnmanagedPSOTest.csproj", "{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = OfflineParticleSwarmOptimization.vsmdi
@@ -55,6 +57,14 @@ Global
 		{46715A67-B134-473C-ACE4-EF6AA1C0E688}.Release|x64.Build.0 = Release|x64
 		{46715A67-B134-473C-ACE4-EF6AA1C0E688}.Release|x86.ActiveCfg = Release|x86
 		{46715A67-B134-473C-ACE4-EF6AA1C0E688}.Release|x86.Build.0 = Release|x86
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Release|x64.ActiveCfg = Release|Any CPU
+		{60D5DCD4-EF7A-4C06-90A9-314D92EE4E50}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

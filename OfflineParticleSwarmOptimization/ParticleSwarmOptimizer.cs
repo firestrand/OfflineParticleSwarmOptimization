@@ -50,13 +50,13 @@ namespace OfflineParticleSwarmOptimization
             int s = particle;
             // ... find the first informant
             int s1 = 0;
-            while (swarmState.Links[s1, s] == 0) s1++;
+            while (swarmState.Links[Tools.GetIndex(s1, s)] == 0) s1++;
             if (s1 >= S) s1 = s;
             // Find the best informant			
             int g = s1;
             for (int m = s1; m < S; m++)
             {
-                if (swarmState.Links[m, s] == 1 && swarmState.BestParticleFitness[m] < swarmState.BestParticleFitness[g])
+                if (swarmState.Links[Tools.GetIndex(m, s)] == 1 && swarmState.BestParticleFitness[m] < swarmState.BestParticleFitness[g])
                     g = m;
             }
             //.. compute the new velocity, and move
