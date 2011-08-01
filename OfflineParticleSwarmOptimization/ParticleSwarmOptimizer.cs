@@ -39,10 +39,14 @@ namespace OfflineParticleSwarmOptimization
             {
                 swarmState.Particles[particle].CopyTo(swarmState.BestParticle[particle], 0);
                 swarmState.BestParticleFitness[particle] = swarmState.ParticleFitness[particle];
+                if(swarmState.BestParticleFitness[particle] < swarmState.BestParticleFitness[swarmState.G])
+                {
+                    swarmState.G = particle;
+                }
             }
 
             //Check if epoch values should be updated
-            if(particle == S || swarmState.EvaluationCount == 0)
+            if(particle == (S-1) || swarmState.EvaluationCount == 0)
             {
                 swarmState.UpdateEpochValues();
             }
