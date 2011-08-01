@@ -30,7 +30,7 @@ namespace OfflineParticleSwarmOptimizationTest
                 for (int s = 0; s < swarmState.Parameters.S; s++)
                 {
                     var fitness = SphereFitness(ParticleSwarmOptimizer.GetValues(s, swarmState));
-                    swarmState = ParticleSwarmOptimizer.ReportFitness(s, fitness, swarmState);
+                    ParticleSwarmOptimizer.ReportFitness(s, fitness, swarmState);
                 }
             }
             Assert.IsTrue(swarmState.BestParticleFitness[swarmState.G] < 1.0);
@@ -45,7 +45,26 @@ namespace OfflineParticleSwarmOptimizationTest
                 for (int s = 0; s < swarmState.Parameters.S; s++)
                 {
                     var fitness = SphereFitness(ParticleSwarmOptimizer.GetValues(s, swarmState));
-                    swarmState = ParticleSwarmOptimizer.ReportFitness(s, fitness, swarmState);
+                    ParticleSwarmOptimizer.ReportFitness(s, fitness, swarmState);
+                }
+            }
+            Assert.IsTrue(swarmState.BestParticleFitness[swarmState.G] < 1.0);
+        }
+        [TestMethod]
+        public void CanOptimizeSphereWithFunctionEvaluationCountOnly()
+        {
+            var dimensionality = 20;
+            var swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensionality,
+                Enumerable.Repeat(-100.0, dimensionality).ToArray(),
+                Enumerable.Repeat(100.0, dimensionality).ToArray(),
+                Enumerable.Repeat(-10000.0, dimensionality).ToArray(),
+                Enumerable.Repeat(10000.0, dimensionality).ToArray());
+            for (int i = 0; i < 20000; i++)
+            {
+                for (int s = 0; s < swarmState.Parameters.S; s++)
+                {
+                    var fitness = SphereFitness(ParticleSwarmOptimizer.GetValues(s, swarmState));
+                    ParticleSwarmOptimizer.ReportFitness(s, fitness, swarmState);
                 }
             }
             Assert.IsTrue(swarmState.BestParticleFitness[swarmState.G] < 1.0);

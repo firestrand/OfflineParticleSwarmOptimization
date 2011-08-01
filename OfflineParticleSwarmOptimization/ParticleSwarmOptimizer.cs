@@ -26,7 +26,7 @@ namespace OfflineParticleSwarmOptimization
             return new ParticleSwarmState(dimensions, NumberOfInformedParticles, lowerInit, upperInit, lowerBound, upperBound, quantization);
         }
 
-        public static ParticleSwarmState ReportFitness(int particle, double fitness, ParticleSwarmState swarmState)
+        public static void ReportFitness(int particle, double fitness, ParticleSwarmState swarmState)
         {
             int S = swarmState.Parameters.S;
 
@@ -100,7 +100,6 @@ namespace OfflineParticleSwarmOptimization
             //Respect Quantization
             Tools.Quantize(swarmState.Particles[s],swarmState.Quantization);
             swarmState.EvaluationCount++;
-            return swarmState;
         }
         public static double[] GetValues(int particle, ParticleSwarmState swarmState)
         {

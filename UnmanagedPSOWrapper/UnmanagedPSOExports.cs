@@ -35,7 +35,7 @@ namespace UnmanagedPSOWrapper
            //Get Current State from File
            var swarmState = DeserializePSOState();
            if (particle >= swarmState.Parameters.S) return;//Do nothing
-           swarmState = ParticleSwarmOptimizer.ReportFitness(particle, fitness, swarmState);
+           ParticleSwarmOptimizer.ReportFitness(particle, fitness, swarmState);
            SerializePSOState(swarmState);
 
        }
