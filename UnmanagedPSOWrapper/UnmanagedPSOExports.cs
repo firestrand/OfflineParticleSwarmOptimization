@@ -13,8 +13,8 @@ namespace UnmanagedPSOWrapper
 {
    internal static class UnmanagedPSOExports
    {
-       private const string _path = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOState.xml";
-
+       private const string _statePath = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOState.xml";
+       private const string _historyPath = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOHistory.xml";
        //Initialize
       [DllExport("InitializeSwarmState", CallingConvention = CallingConvention.StdCall)]
        static void InitializeSwarmState(int dimensions, int swarmSize,
@@ -27,6 +27,7 @@ namespace UnmanagedPSOWrapper
                                                                                     lowerBound, upperBound, lowerBound,
                                                                                     upperBound, quantization);
           SerializePSOState(swarmState);
+          CreateHistoryFile(swarmState);
       }
        //ReportFitness
        [DllExport("ReportFitness", CallingConvention = CallingConvention.StdCall)]
@@ -35,6 +36,8 @@ namespace UnmanagedPSOWrapper
            //Get Current State from File
            var swarmState = DeserializePSOState();
            if (particle >= swarmState.Parameters.S) return;//Do nothing
+
+           WriteHistoryLine(particle, swarmState, fitness);
            ParticleSwarmOptimizer.ReportFitness(particle, fitness, swarmState);
            SerializePSOState(swarmState);
 
@@ -64,15 +67,38 @@ namespace UnmanagedPSOWrapper
            var swarmState = DeserializePSOState();
            return swarmState.Initialized;
        }
+       public static void WriteHistoryLine(int particle, ParticleSwarmState swarmState, double fitness)
+       {
+           var sb = new StringBuilder();
+           sb.AppendFormat("{0},{1},{2}", particle,swarmState.EvaluationCount,fitness);
+           foreach(var v in swarmState.Particles[particle])
+           {
+               sb.AppendFormat(",{0}", v);
+           }
+           using (StreamWriter sw = File.AppendText(_historyPath))
+           {
+               sw.WriteLine(sb.ToString());
+           }
+       }
+       public static void CreateHistoryFile(ParticleSwarmState swarmState)
+       {
+           var sb = new StringBuilder();
+           sb.Append("Particle,FunctionEvaluation,Fitness");
+           for (int i = 0; i < swarmState.Parameters.D; i++)
+           {
+               sb.AppendFormat(",Parameter{0}", i);
+           }
+           File.WriteAllText(_historyPath, sb.ToString());
+       }
        public static ParticleSwarmState DeserializePSOState()
        {
            string swarmStateXml;
-           if (!File.Exists(_path))
+           if (!File.Exists(_statePath))
            {
-               Console.WriteLine("{0} does not exist.", _path);
+               Console.WriteLine("{0} does not exist.", _statePath);
                return new ParticleSwarmState();
            }
-           using(var sr = File.OpenText(_path))
+           using(var sr = File.OpenText(_statePath))
            {
                swarmStateXml = sr.ReadToEnd();
            }
@@ -98,7 +124,7 @@ namespace UnmanagedPSOWrapper
                using (var writer = XmlWriter.Create(stringWriter, settings))
                {
                    xmlSerializer.Serialize(writer, swarmState, ns);
-                   File.WriteAllText(_path,stringWriter.ToString());
+                   File.WriteAllText(_statePath,stringWriter.ToString());
                }
            }
        }
