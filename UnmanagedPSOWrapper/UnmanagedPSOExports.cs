@@ -76,7 +76,7 @@ namespace UnmanagedPSOWrapper
                sb.AppendFormat(",{0}", v);
            }
            var fi = new FileInfo(_historyPath);
-           using (var sw = fi.CreateText())
+           using (var sw = fi.AppendText())
            {
                sw.WriteLine(sb.ToString());
            }
@@ -95,7 +95,6 @@ namespace UnmanagedPSOWrapper
            {
                sw.WriteLine(sb.ToString());
            }
-           //File.WriteAllText(_historyPath, sb.ToString());
        }
        public static ParticleSwarmState DeserializePSOState()
        {
@@ -105,7 +104,8 @@ namespace UnmanagedPSOWrapper
                Console.WriteLine("{0} does not exist.", _statePath);
                return new ParticleSwarmState();
            }
-           using(var sr = File.OpenText(_statePath))
+           var fi = new FileInfo(_statePath);
+           using (var sr = fi.OpenText())
            {
                swarmStateXml = sr.ReadToEnd();
            }
