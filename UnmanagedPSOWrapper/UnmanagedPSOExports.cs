@@ -14,7 +14,7 @@ namespace UnmanagedPSOWrapper
    internal static class UnmanagedPSOExports
    {
        private const string _statePath = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOState.xml";
-       private const string _historyPath = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOHistory.xml";
+       private const string _historyPath = @"C:\Program Files\MetaTrader 5\MQL5\Files\PSOHistory.csv";
        //Initialize
       [DllExport("InitializeSwarmState", CallingConvention = CallingConvention.StdCall)]
        static void InitializeSwarmState(int dimensions, int swarmSize,
@@ -75,7 +75,8 @@ namespace UnmanagedPSOWrapper
            {
                sb.AppendFormat(",{0}", v);
            }
-           using (StreamWriter sw = File.AppendText(_historyPath))
+           var fi = new FileInfo(_historyPath);
+           using (var sw = fi.CreateText())
            {
                sw.WriteLine(sb.ToString());
            }
@@ -88,7 +89,13 @@ namespace UnmanagedPSOWrapper
            {
                sb.AppendFormat(",Parameter{0}", i);
            }
-           File.WriteAllText(_historyPath, sb.ToString());
+           sb.AppendLine();
+           var fi = new FileInfo(_historyPath);
+           using(var sw = fi.CreateText())
+           {
+               sw.WriteLine(sb.ToString());
+           }
+           //File.WriteAllText(_historyPath, sb.ToString());
        }
        public static ParticleSwarmState DeserializePSOState()
        {
