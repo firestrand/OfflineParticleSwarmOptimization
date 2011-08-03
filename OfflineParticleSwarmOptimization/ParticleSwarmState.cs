@@ -96,10 +96,12 @@ namespace OfflineParticleSwarmOptimization
                 {
                     for (int m = 0; m < Parameters.S; m++)
                     {
-                        if (rand.NextDouble() < Parameters.P) Links[Tools.GetIndex(m, s)] = 1;	// Probabilistic method
-                        else Links[Tools.GetIndex(m, s)] = 0;
+                        if (rand.NextDouble() < Parameters.P) 
+                            Links[Tools.GetIndex(m, s, Parameters.S)] = 1;	// Probabilistic method
+                        else
+                            Links[Tools.GetIndex(m, s, Parameters.S)] = 0;
                     }
-                    Links[Tools.GetIndex(s, s)] = 1;
+                    Links[Tools.GetIndex(s, s, Parameters.S)] = 1;
                 }
             }
         }

@@ -98,9 +98,8 @@ namespace OfflineParticleSwarmOptimization
                 }
             }
         }
-        public static int GetIndex(int a, int b)
+        public static int GetIndex(int a, int b, int cols=2)
         {
-            const int cols = 2;
             return a * cols + b;
         }
     }
