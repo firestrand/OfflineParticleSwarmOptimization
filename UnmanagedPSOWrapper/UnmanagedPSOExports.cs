@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -27,6 +28,7 @@ namespace UnmanagedPSOWrapper
           var swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensions, swarmSize,
                                                                                     lowerBound, upperBound, lowerBound,
                                                                                     upperBound, quantization);
+          CreateEventLog();
           SerializePSOState(swarmState);
           CreateHistoryFile(swarmState);
       }
@@ -76,10 +78,25 @@ namespace UnmanagedPSOWrapper
            {
                sb.AppendFormat(",{0}", v);
            }
+           bool historyFileWritten = false;
+           
            var fi = new FileInfo(_historyPath);
-           using (var sw = fi.AppendText())
+           while (!historyFileWritten)
            {
-               sw.WriteLine(sb.ToString());
+               try
+               {
+                   using (var sw = fi.AppendText())
+                   {
+                       sw.WriteLine(sb.ToString());
+                   }
+                   historyFileWritten = true;
+               }
+               catch (Exception)
+               {
+                   //Do nothing for now
+                   EventLog.WriteEntry("UnmanagedPSO", "Error Appending History File.", EventLogEntryType.Error);
+                   Thread.Sleep(357);
+               }
            }
        }
        public static void CreateHistoryFile(ParticleSwarmState swarmState)
@@ -125,6 +142,7 @@ namespace UnmanagedPSOWrapper
                catch
                {
                    //Do nothing for now
+                   EventLog.WriteEntry("UnmanagedPSO", "Error Deserializing PSOState.", EventLogEntryType.Error);
                    Thread.Sleep(357);
                }
            }
@@ -162,8 +180,16 @@ namespace UnmanagedPSOWrapper
                catch
                {
                    //Do nothing for now
+                   EventLog.WriteEntry("UnmanagedPSO","Error Serializing PSOState.", EventLogEntryType.Error);
                    Thread.Sleep(357);
                }
+           }
+       }
+       public static void CreateEventLog()
+       {
+           if(!EventLog.SourceExists("UnmanagedPSO"))
+           {
+               EventLog.CreateEventSource("UnmanagedPSO","unmanagedPSOLog");
            }
        }
    }
