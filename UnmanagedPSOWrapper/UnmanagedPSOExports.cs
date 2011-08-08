@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using OfflineParticleSwarmOptimization;
@@ -89,7 +90,7 @@ namespace UnmanagedPSOWrapper
            {
                sb.AppendFormat(",Parameter{0}", i);
            }
-           sb.AppendLine();
+           //sb.AppendLine();
            var fi = new FileInfo(_historyPath);
            using(var sw = fi.CreateText())
            {
@@ -98,18 +99,35 @@ namespace UnmanagedPSOWrapper
        }
        public static ParticleSwarmState DeserializePSOState()
        {
-           string swarmStateXml;
+           string swarmStateXml = String.Empty;
            if (!File.Exists(_statePath))
            {
                Console.WriteLine("{0} does not exist.", _statePath);
                return new ParticleSwarmState();
            }
-           var fi = new FileInfo(_statePath);
-           using (var sr = fi.OpenText())
+           bool swarmStateRead = false;
+           while (!swarmStateRead)
            {
-               swarmStateXml = sr.ReadToEnd();
+               try
+               {
+                   var fi = new FileInfo(_statePath);
+                   using (var sr = fi.OpenText())
+                   {
+                       swarmStateXml = sr.ReadToEnd();
+                   }
+                   if(String.IsNullOrWhiteSpace(swarmStateXml))
+                   {
+                       throw new SerializationException("Serialization failed to read the file state");
+                   }
+                   swarmStateRead = true;
+                   
+               }
+               catch
+               {
+                   //Do nothing for now
+                   Thread.Sleep(357);
+               }
            }
-
            ParticleSwarmState result;
            var xmlSerializer = new XmlSerializer(typeof(ParticleSwarmState));
            using (var reader = new StringReader(swarmStateXml))
@@ -126,12 +144,25 @@ namespace UnmanagedPSOWrapper
            var settings = new XmlWriterSettings { OmitXmlDeclaration = true };
            var ns = new XmlSerializerNamespaces();
            ns.Add("", "");
-           using (var stringWriter = new StringWriter())
+           bool swarmStateWritten = false;
+           while (!swarmStateWritten)
            {
-               using (var writer = XmlWriter.Create(stringWriter, settings))
+               try
                {
-                   xmlSerializer.Serialize(writer, swarmState, ns);
-                   File.WriteAllText(_statePath,stringWriter.ToString());
+                   using (var stringWriter = new StringWriter())
+                   {
+                       using (var writer = XmlWriter.Create(stringWriter, settings))
+                       {
+                           xmlSerializer.Serialize(writer, swarmState, ns);
+                           File.WriteAllText(_statePath, stringWriter.ToString());
+                       }
+                   }
+                   swarmStateWritten = true;
+               }
+               catch
+               {
+                   //Do nothing for now
+                   Thread.Sleep(357);
                }
            }
        }
