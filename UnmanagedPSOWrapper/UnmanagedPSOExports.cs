@@ -25,8 +25,7 @@ namespace UnmanagedPSOWrapper
           [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] quantization)
       {
 
-          var swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensions, swarmSize,
-                                                                                    lowerBound, upperBound, lowerBound,
+          var swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(dimensions, lowerBound, upperBound, lowerBound,
                                                                                     upperBound, quantization);
           CreateEventLog();
           SerializePSOState(swarmState);
@@ -47,13 +46,15 @@ namespace UnmanagedPSOWrapper
        }
        //Get Values
        [DllExport("GetValues", CallingConvention = CallingConvention.StdCall)]
-       static void GetValues(int dimensions, int particle,
+       static int GetValues(int dimensions,
            [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] double[] values)
        {
            //Get Current State from File
            var swarmState = DeserializePSOState();
+           var particle = swarmState.GetParticle();
            if (particle >= swarmState.Parameters.S) particle = swarmState.G;//Get current best with invalid particle request
            ParticleSwarmOptimizer.GetValues(particle, swarmState).CopyTo(values,0);
+           return particle;
        }
        [DllExport("GetBestValues", CallingConvention = CallingConvention.StdCall)]
        static void GetBestValues(int dimensions,

@@ -19,6 +19,7 @@ namespace OfflineParticleSwarmOptimization
         public int EvaluationCount { get; set; }
         public double[] Quantization { get; set; }
         public bool Initialized { get; set; }
+        public int NextParticle { get; set; }
 
         //Default parameterless constructor for serialization / deserialization
         public ParticleSwarmState(){}
@@ -34,6 +35,7 @@ namespace OfflineParticleSwarmOptimization
 
             Parameters = SwarmParameters.Initialize(dimensions, swarmSize, numberInformed);
             Initialize(dimensions, lowerInit, upperInit, lowerBound, upperBound, quantization);
+            NextParticle = 0;
         }
 
         public ParticleSwarmState(int dimensions, int numberInformed, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound, double[] quantization = null )
@@ -48,6 +50,16 @@ namespace OfflineParticleSwarmOptimization
             
             Parameters = SwarmParameters.Initialize(dimensions, numberInformed);
             Initialize(dimensions, lowerInit, upperInit, lowerBound, upperBound, quantization);
+            NextParticle = 0;
+        }
+        public int GetParticle()
+        {
+            int returnParticle = NextParticle++;
+            if(NextParticle == Parameters.S)
+            {
+                NextParticle = 0;
+            }
+            return returnParticle;
         }
 
         private void Initialize(int dimensions, double[] lowerInit, double[] upperInit, double[] lowerBound, double[] upperBound,

@@ -41,5 +41,17 @@ namespace UnmanagedPSOTest
             actual = UnmanagedPSOExports.DeserializePSOState();
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void ParticleSwarmStateGetParticleCyclesThroughAllParticles()
+        {
+            ParticleSwarmState pState = new ParticleSwarmState();
+            pState.Parameters = SwarmParameters.Initialize(5,5,3);
+            for (int i = 0; i < 10; i++)
+            {
+                int val = pState.GetParticle();
+                Assert.IsTrue(val == i%5);
+            }
+        }
     }
 }
