@@ -15,10 +15,10 @@ namespace OfflineParticleSwarmOptimizationTest
     public class ParticleSwarmOptimizerTest
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void DimensionOfZeroThrowsAnException()
         {
-            var swarmState = ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(0, new[] { 0.0 }, new[] { 0.0 }, new[] { 0.0 }, new[] { 0.0 });
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+                ParticleSwarmOptimizer.InitializeParticleSwarmOptimizer(0, new[] { 0.0 }, new[] { 0.0 }, new[] { 0.0 }, new[] { 0.0 }));
         }
         [TestMethod]
         public void CanOptimizeSphere()
